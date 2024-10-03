@@ -25,7 +25,7 @@ const formSchema = z.object({
   }),
 });
 
-export default function LoginForm({ closeLogin , openSignUp}) {
+export default function LoginForm({ closeLogin, openSignUp }) {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -99,8 +99,14 @@ export default function LoginForm({ closeLogin , openSignUp}) {
           <p>
             Don&apos;t have an account?{" "}
             <Link to="/signup">
-              <u onClick={() => { openSignUp();
-                 closeLogin(); }}>Sign up</u>
+              <u
+                onClick={() => {
+                  openSignUp();
+                  closeLogin();
+                }}
+              >
+                Sign up
+              </u>
             </Link>
           </p>
         </div>
