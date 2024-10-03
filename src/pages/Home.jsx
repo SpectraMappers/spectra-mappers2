@@ -6,22 +6,22 @@ import About from "../components/home/About";
 import Text from "../components/home/Text";
 import Instructions from "../components/home/Instructions";
 import SignInForm from "../components/SignUpForm";
-import LoginForm from "../components/LoginForm"; // Import the LoginForm component
+import LoginForm from "../components/LogInForm";
 
 function Home() {
   const [isSignInOpen, setSignUpOpen] = useState(false);
-  const [isLoginOpen, setLoginOpen] = useState(false); 
+  const [isLoginOpen, setLoginOpen] = useState(false);
 
   const openSignUp = () => setSignUpOpen(true);
   const closeSignUP = () => setSignUpOpen(false);
-  
-  const openLogin = () => setLoginOpen(true); 
-  const closeLogin = () => setLoginOpen(false); 
+
+  const openLogin = () => setLoginOpen(true);
+  const closeLogin = () => setLoginOpen(false);
 
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth' // Smooth scroll to top
+      behavior: "smooth", // Smooth scroll to top
     });
   };
 
