@@ -6,7 +6,7 @@ import About from "../components/home/About";
 import Text from "../components/home/Text";
 import Instructions from "../components/home/Instructions";
 import SignInForm from "../components/SignUpForm";
-import LoginForm from "../components/loginForm";
+import LoginForm from "../components/LoginForm";
 
 function Home() {
   const [isSignInOpen, setSignUpOpen] = useState(false);
