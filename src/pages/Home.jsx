@@ -63,7 +63,7 @@ function Home() {
       {/* Scroll to Top Button */}
       <button
         onClick={scrollToTop}
-        className="fixed bottom-4 right-4 bg-blue-500 text-white rounded-full p-3 shadow-lg hover:bg-blue-600 transition duration-200"
+        className="fixed z-50 bottom-4 right-4 bg-blue-500 text-white rounded-full p-3 shadow-lg hover:bg-blue-600 transition duration-200"
         aria-label="Scroll to Top"
       >
         <IoArrowUpCircle size={24} />
