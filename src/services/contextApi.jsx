@@ -1,3 +1,4 @@
+// src/services/contextApi.jsx
 import { createContext, useContext, useReducer } from "react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
@@ -54,7 +55,7 @@ export const ModalProvider = ({ children }) => {
   const [state, dispatch] = useReducer(modalReducer, initialState);
 
   // Functions to open and close modals
-  const openSignUP = () => dispatch({ type: OPEN_SIGNUP });
+  const openSignUp = () => dispatch({ type: OPEN_SIGNUP }); // Ensure this function name is correct
   const closeSignIn = () => dispatch({ type: CLOSE_SIGNUP });
   const openLogin = () => dispatch({ type: OPEN_LOGIN });
   const closeLogin = () => dispatch({ type: CLOSE_LOGIN });
@@ -105,14 +106,14 @@ export const ModalProvider = ({ children }) => {
     <ModalContext.Provider
       value={{
         ...state,
-        openSignUP,
+        openSignUp, // Correct function name
         closeSignIn,
         openLogin,
         closeLogin,
         openForgetPass,
         closeForgetPass,
         submitSignUp,
-        fetchUserData: setSignUpData, // Corrected to setSignUpData
+        fetchUserData: setSignUpData,
       }}
     >
       {children}

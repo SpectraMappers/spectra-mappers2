@@ -1,4 +1,4 @@
-import { createContext, useContext} from "react";
+import { createContext, useContext } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -44,7 +44,11 @@ export const useAuth = () => {
             navigate("/map");
           } catch (error) {
             // Handle error if fetching user data fails
-            Swal.fire(error, "Failed to fetch user data. Please try again.", "error");
+            Swal.fire(
+              error,
+              "Failed to fetch user data. Please try again.",
+              "error"
+            );
           }
         } else {
           // Show error message if login credentials are incorrect
@@ -61,7 +65,7 @@ export const useAuth = () => {
   // Function to fetch user data from the server after login
   const fetchUserData = async (token) => {
     try {
-      const response = await axios.get("https://nasa.elyra.games/user/profile", {
+      const response = await axios.get("https://nasa.elyra.games/user/me", {
         headers: {
           Authorization: `Bearer ${token}`, // Include the token in the request headers
         },

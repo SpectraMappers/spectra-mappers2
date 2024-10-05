@@ -1,5 +1,3 @@
-// src/hooks/useNavbarHook.jsx
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useModal } from "../services/contextApi"; // Import the useModal hook
@@ -11,12 +9,7 @@ export const useNavbarHook = () => {
   const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false); // State for profile pop-up
   const [isLocationPopupOpen, setIsLocationPopupOpen] = useState(false); // State for location pop-up
   
-  const {
-    openLogin,     // Access login modal open function
-    closeLogin,    // Access login modal close function
-    openSignUp,    // Access signup modal open function
-    closeSignUp,   // Access signup modal close function
-  } = useModal();  // Destructure modal functions
+  const { openLogin, closeLogin, openSignUp, closeSignUp } = useModal();
 
   // Toggle the menu visibility
   const toggleMenu = () => {
@@ -40,13 +33,11 @@ export const useNavbarHook = () => {
     setIsPopupOpen(false);
   };
 
-  // Function to fetch user data using the token
+  // Fetch user data using token
   const fetchUserData = async (token) => {
     try {
       const response = await axios.get("https://nasa.elyra.games/user/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       const userData = response.data.data;
@@ -57,14 +48,13 @@ export const useNavbarHook = () => {
     }
   };
 
-  // Fetch user data from localStorage if logged in
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
 
     if (userData) {
       try {
-        const parsedUserData = JSON.parse(userData); // Parse the user data if available
+        const parsedUserData = JSON.parse(userData);
         setUser(parsedUserData);
       } catch (error) {
         console.error("Error parsing user data:", error);
@@ -78,10 +68,10 @@ export const useNavbarHook = () => {
 
   // Logout function to clear user data
   const handleLogout = () => {
-    localStorage.removeItem("user"); // Clear user data from localStorage
-    localStorage.removeItem("token"); // Clear the token from localStorage
-    setUser(null); // Reset user state
-    window.location.reload(); // Optionally reload to update the UI
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    setUser(null);
+    window.location.reload();
   };
 
   return {
@@ -90,7 +80,7 @@ export const useNavbarHook = () => {
     isPopupOpen,
     isProfilePopupOpen,
     isLocationPopupOpen,
-    openLogin,          // Export modal functions to be used in the Navbar component
+    openLogin,
     closeLogin,
     openSignUp,
     closeSignUp,

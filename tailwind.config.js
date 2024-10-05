@@ -9,7 +9,8 @@ export default {
   			'custom-gradient': 'linear-gradient(0deg, #0E0F2A 60%, transparent 100%)'
   		},
   		fontFamily: {
-  			'Kanit': ["Kanit", "sans-serif"]
+  			'Kanit': ["Kanit", "sans-serif"],
+			"Monoton": ["Monoton", "cursive"]
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
