@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { IoClose } from "react-icons/io5";
+import { useModal } from "../services/contextApi"; // Importing useModal
 
 import {
   Form,
@@ -18,11 +19,14 @@ import {
 import { z } from "zod";
 import Row from "@/components/ui/Row";
 import { Link } from "react-router-dom";
-import Swal from "sweetalert2";
 
+// Form schema using zod
 const formSchema = z.object({
-  Name: z.string().min(2, {
+  firstName: z.string().min(2, {
     message: "First name must be at least 2 characters.",
+  }),
+  lastName: z.string().min(2, {
+    message: "Last name must be at least 2 characters.",
   }),
   email: z.string().email({
     message: "Please enter a valid email address.",
@@ -39,11 +43,15 @@ const formSchema = z.object({
   subscribeNewsletter: z.boolean(),
 });
 
-export default function SignUPForm({ closeSignUp ,openLogin}) {
+export default function SignUpForm() {
+  const { openLogin, closeSignIn, submitSignUp, submitLogin } = useModal(); // Adding submitLogin
+
+  // Initialize the form with react-hook-form and zodResolver
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      Name: "",
+      firstName: "",
+      lastName: "",
       email: "",
       phoneNumber: "",
       password: "",
@@ -52,41 +60,90 @@ export default function SignUPForm({ closeSignUp ,openLogin}) {
     },
   });
 
-  function onSubmit(values) {
-    console.log(values);
-    closeSignUp();
-    Swal.fire({
-      position: "top-end",
-      icon: "success",
-      title: "Your Account has been saved",
-      showConfirmButton: false,
-      timer: 1500,
-    });
+  // Handle form submission
+  async function onSubmit(values) {
+    // Submit SignUp form data
+    await submitSignUp(values); // Assuming submitSignUp returns a promise
+
+    // Store Gmail and Password in localStorage (or sessionStorage)
+    localStorage.setItem("email", values.email);
+    localStorage.setItem("password", values.password);
+
+    // Clear form inputs after submission
+    form.reset();
+
+    // Automatically log in using the stored Gmail and Password
+    const storedEmail = localStorage.getItem("email");
+    const storedPassword = localStorage.getItem("password");
+
+    if (storedEmail && storedPassword) {
+      // Call submitLogin function
+      submitLogin({
+        email: storedEmail,
+        password: storedPassword,
+      });
+    }
+
+    // Close SignUp modal and open Login modal
+    closeSignIn();
+    openLogin();
   }
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="relative flex flex-col gap-4 w-3/4 p-10 font-Kanit bg-[#E6E6E6] rounded-3xl"
-      >
-        <div>
-          <h1 className="text-3xl font-bold">Sign Up now</h1>
-        </div>
-        <button
-          className="absolute right-5 top-5 text-gray-600 hover:text-gray-800"
-          onClick={closeSignUp}
-          aria-label="Close"
+      <div className="w-full p-4 md:p-20 ">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="relative flex flex-col gap-4 w-full p-10 font-Kanit bg-[#E6E6E6] rounded-3xl"
         >
-          <IoClose size={24} />
-        </button>
-        <Row type="horizontal">
+          <div>
+            <h1 className="text-3xl font-bold">Sign Up now</h1>
+          </div>
+          <button
+            className="absolute right-5 top-5 text-gray-600 hover:text-gray-800"
+            onClick={closeSignIn}
+            aria-label="Close"
+          >
+            <IoClose size={24} />
+          </button>
+
+          {/* First Name and Last Name */}
+          <Row type="horizontal">
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem className="w-1/2">
+                  <FormLabel>First Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem className="w-1/2">
+                  <FormLabel>Last Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </Row>
+
+          {/* Email */}
           <FormField
             control={form.control}
-            name="Name"
+            name="email"
             render={({ field }) => (
-              <FormItem className="w-3/4">
-                <FormLabel>You Full Name</FormLabel>
+              <FormItem>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -94,18 +151,20 @@ export default function SignUPForm({ closeSignUp ,openLogin}) {
               </FormItem>
             )}
           />
+
+          {/* Phone Number */}
           <FormField
             control={form.control}
             name="phoneNumber"
             render={({ field }) => (
-              <FormItem className="w-1/3">
+              <FormItem className="w-full">
                 <FormLabel>Phone Number</FormLabel>
                 <FormControl className="w-full">
                   <PhoneInput
                     className="w-full"
                     country={"us"}
                     value={field.value}
-                    onChange={field.onChange}
+                    onChange={(value) => field.onChange(value)} // Update value for react-hook-form
                     inputProps={{
                       name: "phoneNumber",
                       required: true,
@@ -116,93 +175,89 @@ export default function SignUPForm({ closeSignUp ,openLogin}) {
               </FormItem>
             )}
           />
-        </Row>
 
-        {/* Email */}
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          {/* Password */}
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input type="password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {/* Password */}
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          {/* Accept Terms and Conditions */}
+          <FormField
+            control={form.control}
+            name="acceptTerms"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center space-x-1">
+                <FormControl>
+                  <Checkbox
+                    id="acceptTerms"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormLabel htmlFor="acceptTerms" className="text-[10px]">
+                  Accept terms and conditions. By creating an account, I agree to
+                  our <u>Terms of use</u> and <u>Privacy Policy </u>
+                </FormLabel>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {/* Accept Terms and Conditions Checkbox */}
-        <FormField
-          control={form.control}
-          name="acceptTerms"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center space-x-1">
-              <FormControl>
-                <Checkbox
-                  id="acceptTerms"
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <FormLabel htmlFor="acceptTerms">
-                Accept terms and conditionsBy creating an account, I agree to
-                our <u>Terms of use</u> and <u>Privacy Policy </u>
-              </FormLabel>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          {/* Subscribe to Newsletter */}
+          <FormField
+            control={form.control}
+            name="subscribeNewsletter"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center space-x-1">
+                <FormControl>
+                  <Checkbox
+                    id="subscribeNewsletter"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormLabel
+                  htmlFor="subscribeNewsletter"
+                  className="text-[10px]"
+                >
+                  By creating an account, I am also consenting to receive SMS
+                  messages and emails, including product new feature updates,
+                  events, and marketing promotions.
+                </FormLabel>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {/* Subscribe to Newsletter Checkbox */}
-        <FormField
-          control={form.control}
-          name="subscribeNewsletter"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center space-x-1">
-              <FormControl>
-                <Checkbox
-                  id="subscribeNewsletter"
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <FormLabel htmlFor="subscribeNewsletter">
-                By creating an account, I am also consenting to receive SMS
-                messages and emails, including product new feature updates,
-                events, and marketing promotions.
-              </FormLabel>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <div className="flex gap-4 items-center">
-          <Button type="submit">Submit</Button>
-          <p>
-            Already have an ccount?{" "}
-            <Link to="/login">
-              <u onClick={() => { closeSignUp(); openLogin(); }}>Log in</u>
-            </Link>{" "}
-          </p>
-        </div>
-      </form>
+          {/* Submit Button */}
+          <div className="flex gap-4 items-center">
+            <Button type="submit">Submit</Button>
+            <p className="text-xs text-gray-600">
+              Already have an account?{" "}
+              <Link to="/login">
+                <u
+                  onClick={() => {
+                    closeSignIn();
+                    openLogin();
+                  }}
+                >
+                  Log in
+                </u>
+              </Link>
+            </p>
+          </div>
+        </form>
+      </div>
     </Form>
   );
 }

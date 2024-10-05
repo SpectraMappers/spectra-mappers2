@@ -16,6 +16,7 @@
     background-color: #0E0F2A;
     scroll-behavior: smooth;
   }
+
   :root {
     --background: 0 0% 0%;
     --foreground: 224 71.4% 4.1%;
@@ -43,7 +44,7 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
   }
- 
+
   .dark {
     --background: 224 71.4% 4.1%;
     --foreground: 210 20% 98%;
@@ -177,10 +178,18 @@
   }
 }
 
+.spinner {
+  background: radial-gradient(farthest-side, var(--color-brand-600) 94%, transparent) top/10px 10px no-repeat,
+    conic-gradient(transparent 30%, var(--color-brand-600));
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 10px), black 0);
+}
+
+
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }

@@ -1,68 +1,120 @@
-import {
-    createContext,
-    useContext,
-    useReducer,
-    useCallback,
-  } from "react";
-  import axios from "axios";
-  
-  // Define initial state for input data
-  const initialState = {
-    patientInfo: [],
-    patientFamily: [],
-  };
-  
-  // Define actions to update input data
-  const setInputData = (data) => ({
-    type: "SET_INPUT_DATA",
-    payload: data,
-  });
-  
-  // Reducer function to update state based on actions
-  const inputReducer = (state, action) => {
-    switch (action.type) {
-      case "SET_INPUT_DATA":
-        return { ...state, ...action.payload };
-      default:
-        return state;
+import { createContext, useContext, useReducer } from "react";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import Swal from "sweetalert2"; // Swal for alerts
+
+// Initial state for the modals
+const initialState = {
+  isSignupOpen: false,
+  isLoginOpen: false,
+  isForgetPassOpen: false,
+  signUpData: null, // Include sign-up data
+};
+
+// Action types
+const OPEN_SIGNUP = "OPEN_SIGNIN";
+const CLOSE_SIGNUP = "CLOSE_SIGNIN";
+const OPEN_LOGIN = "OPEN_LOGIN";
+const CLOSE_LOGIN = "CLOSE_LOGIN";
+const OPEN_FORGETPASS = "OPEN_FORGETPASS";
+const CLOSE_FORGETPASS = "CLOSE_FORGETPASS";
+const SET_SIGNUP_DATA = "SET_SIGNUP_DATA"; // Action to set sign-up data
+
+// Reducer function to handle the state transitions
+const modalReducer = (state, action) => {
+  switch (action.type) {
+    case OPEN_SIGNUP:
+      return { ...state, isSignupOpen: true };
+    case CLOSE_SIGNUP:
+      return { ...state, isSignupOpen: false };
+    case OPEN_LOGIN:
+      return { ...state, isLoginOpen: true };
+    case CLOSE_LOGIN:
+      return { ...state, isLoginOpen: false };
+    case OPEN_FORGETPASS:
+      return { ...state, isForgetPassOpen: true };
+    case CLOSE_FORGETPASS:
+      return { ...state, isForgetPassOpen: false };
+    case SET_SIGNUP_DATA:
+      return { ...state, signUpData: action.payload }; // Set sign-up data
+    default:
+      return state;
+  }
+};
+
+// Create the ModalContext
+const ModalContext = createContext();
+
+// API URL base
+const url = "https://nasa.elyra.games/";
+
+// Create a provider component
+export const ModalProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(modalReducer, initialState);
+
+  // Functions to open and close the modals
+  const openSignUP = () => dispatch({ type: OPEN_SIGNUP});
+  const closeSignIn = () => dispatch({ type: CLOSE_SIGNUP});
+  const openLogin = () => dispatch({ type: OPEN_LOGIN });
+  const closeLogin = () => dispatch({ type: CLOSE_LOGIN });
+  const openForgetPass = () => dispatch({ type: OPEN_FORGETPASS });
+  const closeForgetPass = () => dispatch({ type: CLOSE_FORGETPASS });
+
+  // Function to set sign-up data
+  const setSignUpData = (data) => dispatch({ type: SET_SIGNUP_DATA, payload: data });
+
+  // Use React Query to post sign-up data to the API URL
+  const mutation = useMutation(
+    async (userData) => {
+      const response = await axios.post(url + "auth/register", userData);
+      return response.data;
+    },
+    {
+      onSuccess: (data) => {
+        Swal.fire({
+          title: "Success",
+          text: "You have successfully signed up!",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+        console.log("Sign-up success:", data);
+      },
+      onError: (error) => {
+        Swal.fire({
+          title: "Error",
+          text: error?.response?.data?.message || "Sign-up failed!",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+        console.error("Sign-up error:", error);
+      },
     }
+  );
+
+  // Function to handle sign-up submission
+  const submitSignUp = async (data) => {
+    setSignUpData(data); // Store data in context
+    mutation.mutate(data); // Send the data to the API
   };
-  
-  // Create context for input data
-  const InputContext = createContext({
-    inputData: initialState,
-    fetchPatientData: () => {},
-  });
-  
-  // Provider component to manage input data
-  export const InputProvider = ({ children }) => {
-    const [inputData, dispatch] = useReducer(inputReducer, initialState);
-  
-    // Function to fetch patient data
-    const fetchPatientData = useCallback(async () => {
-      try {
-        const response = await axios.get("http://127.0.0.1:8000/patientinfo");
-        dispatch(setInputData({ patientInfo: response.data }));
-      } catch (error) {
-        console.error("Error fetching patient data:", error);
-      }
-    }, []);
-  
-  
-    return (
-      <InputContext.Provider
-        value={{
-          inputData,
-          fetchPatientData,
-        }}
-      >
-        {children}
-      </InputContext.Provider>
-    );
-  };
-  
-  // Custom hook to use input context
-  export const useInput = () => {
-    return useContext(InputContext);
-  };
-  
+
+  return (
+    <ModalContext.Provider
+      value={{
+        ...state,
+        openSignUP,
+        closeSignIn,
+        openLogin,
+        closeLogin,
+        openForgetPass,
+        closeForgetPass,
+        submitSignUp,
+        fetchUserData: setSignUpData, // Corrected from 'featchUsarData'
+      }}
+    >
+      {children}
+    </ModalContext.Provider>
+  );
+};
+
+// Custom hook to use the ModalContext
+export const useModal = () => useContext(ModalContext);

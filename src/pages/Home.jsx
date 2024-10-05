@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { IoArrowUpCircle } from "react-icons/io5"; // Import an arrow icon
 import Navbar from "../components/home/Navbar";
 import Landing from "../components/home/Landing";
@@ -7,16 +6,36 @@ import Text from "../components/home/Text";
 import Instructions from "../components/home/Instructions";
 import SignInForm from "../components/SignUpForm";
 import LoginForm from "../components/LoginForm";
+import ForgetPass from "../components/ForgetPass";
+import { useModal } from "../services/contextApi"; // Import the context
+
+// Reusable Modal Component
+function Modal({ children, closeModal }) {
+  return (
+    <div className="fixed inset-0 bg-transparent filter backdrop-blur flex items-center justify-center z-50">
+      <div
+        className="fixed inset-0 bg-black opacity-10"
+        onClick={closeModal}
+      ></div>
+      <div className="rounded shadow-lg z-10 relative flex items-center justify-center">
+        {children}
+      </div>
+    </div>
+  );
+}
 
 function Home() {
-  const [isSignInOpen, setSignUpOpen] = useState(false);
-  const [isLoginOpen, setLoginOpen] = useState(false);
-
-  const openSignUp = () => setSignUpOpen(true);
-  const closeSignUP = () => setSignUpOpen(false);
-
-  const openLogin = () => setLoginOpen(true);
-  const closeLogin = () => setLoginOpen(false);
+  const {
+    isSignupOpen,
+    isLoginOpen,
+    isForgetPassOpen,
+    openSignup,
+    closeSignIn,
+    openLogin,
+    closeLogin,
+    openForgetPass,
+    closeForgetPass,
+  } = useModal();
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -27,37 +46,38 @@ function Home() {
 
   return (
     <>
-      <Navbar openSignIn={openSignUp} openLogin={openLogin} />
+      <Navbar openSignIn={openSignup} openLogin={openLogin} />
       <Landing>
         <Text />
       </Landing>
       <Instructions />
       <About />
 
-      {/* SignIn Popup */}
-      {isSignInOpen && (
-        <div className="fixed p-20 inset-0 bg-transparent filter backdrop-blur flex items-center justify-center z-50">
-          <div
-            className="fixed inset-0 bg-black opacity-10"
-            onClick={closeSignUP}
-          ></div>
-          <div className="p-20 rounded shadow-lg z-10 relative flex items-center justify-center">
-            <SignInForm closeSignUp={closeSignUP} openLogin={openLogin} />
-          </div>
+      {/* SignIn Modal */}
+      {isSignupOpen && (
+        <div className="w-full p-20 ">
+          <Modal closeModal={closeSignIn}>
+            <SignInForm closeSignUp={closeSignIn} openLogin={openLogin} />
+          </Modal>
         </div>
       )}
 
-      {/* Login Popup */}
+      {/* Login Modal */}
       {isLoginOpen && (
-        <div className="fixed p-20 inset-0 bg-transparent filter backdrop-blur flex items-center justify-center z-50">
-          <div
-            className="fixed inset-0 bg-black opacity-10"
-            onClick={closeLogin}
-          ></div>
-          <div className="p-20 rounded shadow-lg z-10 relative flex items-center justify-center">
-            <LoginForm closeLogin={closeLogin} openSignUp={openSignUp} />
-          </div>
-        </div>
+        <Modal closeModal={closeLogin}>
+          <LoginForm
+            closeLogin={closeLogin}
+            openSignUp={openSignup}
+            openForgetPass={openForgetPass}
+          />
+        </Modal>
+      )}
+
+      {/* ForgetPass Modal */}
+      {isForgetPassOpen && (
+        <Modal closeModal={closeForgetPass}>
+          <ForgetPass closeForgetPass={closeForgetPass} />
+        </Modal>
       )}
 
       {/* Scroll to Top Button */}
