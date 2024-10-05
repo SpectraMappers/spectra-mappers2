@@ -82,7 +82,7 @@ function Navbar() {
               )}
 
               <Button type="button" variant="outline" onClick={handleLogout}>
-                <Link to="/">Logout</Link>
+                <Link to="/">Log out</Link>
               </Button>
             </div>
           ) : (

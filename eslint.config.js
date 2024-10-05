@@ -35,6 +35,7 @@ export default [
       // ],
       "react/prop-types": "off",
       'react-refresh/only-export-components':'off',
+      "no-unused-vars": "off",
     },
   },
 ];
