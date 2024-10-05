@@ -1,3 +1,4 @@
+import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -6,8 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { IoClose } from "react-icons/io5";
-import { useModal } from "../services/contextApi"; // Importing useModal
-
+import { useModal } from "../services/contextApi"; // Import the modal context
 import {
   Form,
   FormControl,
@@ -20,7 +20,7 @@ import { z } from "zod";
 import Row from "@/components/ui/Row";
 import { Link } from "react-router-dom";
 
-// Form schema using zod
+// Form schema using zod for validation
 const formSchema = z.object({
   firstName: z.string().min(2, {
     message: "First name must be at least 2 characters.",
@@ -44,9 +44,9 @@ const formSchema = z.object({
 });
 
 export default function SignUpForm() {
-  const { openLogin, closeSignIn, submitSignUp, submitLogin } = useModal(); // Adding submitLogin
+  const { openLogin, closeSignIn, submitSignUp } = useModal(); // Use the modal context
 
-  // Initialize the form with react-hook-form and zodResolver
+  // Initialize the form using react-hook-form and zodResolver
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -61,43 +61,25 @@ export default function SignUpForm() {
   });
 
   // Handle form submission
-  async function onSubmit(values) {
-    // Submit SignUp form data
-    await submitSignUp(values); // Assuming submitSignUp returns a promise
+  const onSubmit = async (values) => {
+    // Use the context function to submit the sign-up data
+    await submitSignUp(values);
+    form.reset(); // Reset the form after submission
 
-    // Store Gmail and Password in localStorage (or sessionStorage)
-    localStorage.setItem("email", values.email);
-    localStorage.setItem("password", values.password);
-
-    // Clear form inputs after submission
-    form.reset();
-
-    // Automatically log in using the stored Gmail and Password
-    const storedEmail = localStorage.getItem("email");
-    const storedPassword = localStorage.getItem("password");
-
-    if (storedEmail && storedPassword) {
-      // Call submitLogin function
-      submitLogin({
-        email: storedEmail,
-        password: storedPassword,
-      });
-    }
-
-    // Close SignUp modal and open Login modal
+    // Close the Sign Up modal and open the Login modal
     closeSignIn();
     openLogin();
-  }
+  };
 
   return (
     <Form {...form}>
-      <div className="w-full p-4 md:p-20 ">
+      <div className="w-full p-4 md:p-20">
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="relative flex flex-col gap-4 w-full p-10 font-Kanit bg-[#E6E6E6] rounded-3xl"
         >
           <div>
-            <h1 className="text-3xl font-bold">Sign Up now</h1>
+            <h1 className="text-3xl font-bold">Sign Up Now</h1>
           </div>
           <button
             className="absolute right-5 top-5 text-gray-600 hover:text-gray-800"
@@ -206,7 +188,7 @@ export default function SignUpForm() {
                 </FormControl>
                 <FormLabel htmlFor="acceptTerms" className="text-[10px]">
                   Accept terms and conditions. By creating an account, I agree to
-                  our <u>Terms of use</u> and <u>Privacy Policy </u>
+                  our <u>Terms of use</u> and <u>Privacy Policy</u>
                 </FormLabel>
                 <FormMessage />
               </FormItem>
@@ -226,13 +208,9 @@ export default function SignUpForm() {
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
-                <FormLabel
-                  htmlFor="subscribeNewsletter"
-                  className="text-[10px]"
-                >
+                <FormLabel htmlFor="subscribeNewsletter" className="text-[10px]">
                   By creating an account, I am also consenting to receive SMS
-                  messages and emails, including product new feature updates,
-                  events, and marketing promotions.
+                  messages and emails, including product updates, events, and marketing promotions.
                 </FormLabel>
                 <FormMessage />
               </FormItem>

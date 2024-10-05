@@ -2,11 +2,8 @@ import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useModal } from "../../services/contextApi";
 import { RiAccountPinCircleLine } from "react-icons/ri";
-import {
-  MdOutlineSupervisorAccount,
-  MdOutlineShareLocation,
-} from "react-icons/md";
-import { useNavbarHook } from "../../hooks/useNavebarHook"; // Fixed the import path
+import { MdOutlineSupervisorAccount, MdOutlineShareLocation } from "react-icons/md";
+import { useNavbarHook } from "../../hooks/useNavebarHook";
 
 function Navbar() {
   const {
@@ -16,13 +13,14 @@ function Navbar() {
     isProfilePopupOpen,
     isLocationPopupOpen,
     toggleMenu,
-    togglePopup, // Use the correct toggle function
+    togglePopup,
     toggleProfilePopup,
     toggleLocationPopup,
     handleLogout,
   } = useNavbarHook();
 
-  const { openLogin, openSignUp } = useModal();
+  // Use Modal Context for opening Login and Signup modals
+  const { openLogin, openSignUP } = useModal(); // Corrected to match the context
 
   return (
     <nav className="bg-[#0E0F2A] fixed z-40 w-full mb-auto">
@@ -52,7 +50,7 @@ function Navbar() {
                       <Link
                         to="#"
                         onClick={() => {
-                          toggleProfilePopup(); // Toggle profile pop-up
+                          toggleProfilePopup();
                           togglePopup(); // Close the main pop-up
                         }}
                         className="cursor-pointer border-b pb-2 text-blue-500 hover:underline flex items-center"
@@ -68,7 +66,7 @@ function Navbar() {
                       <Link
                         to="#"
                         onClick={() => {
-                          toggleLocationPopup(); // Toggle location pop-up
+                          toggleLocationPopup();
                           togglePopup(); // Close the main pop-up
                         }}
                         className="text-blue-500 hover:underline flex items-center"
@@ -93,7 +91,7 @@ function Navbar() {
                 </Link>
               </Button>
               <Button type="button" variant="secondary">
-                <Link to="/signup" onClick={openSignUp}>
+                <Link to="/signup" onClick={openSignUP}>
                   Sign up
                 </Link>
               </Button>
@@ -169,68 +167,6 @@ function Navbar() {
           </ul>
         </div>
       </div>
-
-      {isProfilePopupOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-filter backdrop-blur-sm z-50">
-          <div className="bg-white w-80 p-6 rounded-xl shadow-xl border border-gray-300">
-            <h3 className="text-lg font-semibold text-black mb-4 border-b pb-2">
-              User Profile
-            </h3>
-            {user && (
-              <div>
-                <div className="mb-4">
-                  <label className="block text-sm mb-2 font-medium text-gray-700">
-                    Name:
-                  </label>
-                  <p className="text-gray-900 border rounded-md p-2">
-                    {user.fullName}
-                  </p>
-                </div>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Email:
-                  </label>
-                  <p className="text-gray-900 border rounded-md p-2">
-                    {user.email}
-                  </p>
-                </div>
-              </div>
-            )}
-            <Button
-            variant="ghost"
-              onClick={toggleProfilePopup}
-              className="mt-4 text-white bg-red-400 hover:bg-red-500"
-            >
-              Close
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {isLocationPopupOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-filter backdrop-blur-sm z-50">
-          <div className="bg-white w-80 p-6 rounded-xl shadow-xl border border-gray-300">
-            <h3 className="text-lg font-semibold text-black mb-4 border-b pb-2">
-              Your Location
-            </h3>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Location:
-              </label>
-              <p className="text-gray-900 border rounded-md p-2">
-                Display user&#39;s location here.
-              </p>
-            </div>
-            <Button
-            variant="ghost"
-              onClick={toggleLocationPopup}
-              className="mt-4 text-white bg-red-400 hover:bg-red-500"
-            >
-              Close
-            </Button>
-          </div>
-        </div>
-      )}
     </nav>
   );
 }

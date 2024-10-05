@@ -1,5 +1,8 @@
+// src/hooks/useNavbarHook.jsx
+
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useModal } from "../services/contextApi"; // Import the useModal hook
 
 export const useNavbarHook = () => {
   const [isOpen, setIsOpen] = useState(false); // State to track menu visibility
@@ -7,23 +10,34 @@ export const useNavbarHook = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State for user actions pop-up
   const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false); // State for profile pop-up
   const [isLocationPopupOpen, setIsLocationPopupOpen] = useState(false); // State for location pop-up
+  
+  const {
+    openLogin,     // Access login modal open function
+    closeLogin,    // Access login modal close function
+    openSignUp,    // Access signup modal open function
+    closeSignUp,   // Access signup modal close function
+  } = useModal();  // Destructure modal functions
 
+  // Toggle the menu visibility
   const toggleMenu = () => {
-    setIsOpen(!isOpen); // Toggle the menu
+    setIsOpen(!isOpen);
   };
 
+  // Toggle the user actions pop-up
   const togglePopup = () => {
-    setIsPopupOpen(!isPopupOpen); // Toggle user actions pop-up
+    setIsPopupOpen(!isPopupOpen);
   };
 
+  // Toggle the profile pop-up and close the main pop-up if open
   const toggleProfilePopup = () => {
-    setIsProfilePopupOpen(!isProfilePopupOpen); // Toggle profile pop-up
-    setIsPopupOpen(false); // Ensure the main pop-up is closed
+    setIsProfilePopupOpen(!isProfilePopupOpen);
+    setIsPopupOpen(false);
   };
 
+  // Toggle the location pop-up and close the main pop-up if open
   const toggleLocationPopup = () => {
-    setIsLocationPopupOpen(!isLocationPopupOpen); // Toggle location pop-up
-    setIsPopupOpen(false); // Ensure the main pop-up is closed
+    setIsLocationPopupOpen(!isLocationPopupOpen);
+    setIsPopupOpen(false);
   };
 
   // Function to fetch user data using the token
@@ -76,8 +90,12 @@ export const useNavbarHook = () => {
     isPopupOpen,
     isProfilePopupOpen,
     isLocationPopupOpen,
+    openLogin,          // Export modal functions to be used in the Navbar component
+    closeLogin,
+    openSignUp,
+    closeSignUp,
     toggleMenu,
-    togglePopup, // Make sure this is included
+    togglePopup, 
     toggleProfilePopup,
     toggleLocationPopup,
     handleLogout,
