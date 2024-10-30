@@ -26,7 +26,7 @@ const formSchema = z.object({
 });
 
 export default function LoginForm() {
-  const { closeLogin, openSignIn } = useModal(); // Using modal context
+  const { closeLogin, openSignUp } = useModal(); // Using modal context
   const { loginMutation } = useAuth(); // Destructuring the loginMutation from useAuth
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -97,7 +97,7 @@ export default function LoginForm() {
                 <u
                   onClick={() => {
                     closeLogin();
-                    openSignIn();
+                    openSignUp();
                   }}
                   className="text-blue-600 hover:text-blue-800"
                 >

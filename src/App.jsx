@@ -16,26 +16,21 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Wrap with BrowserRouter to provide router context */}
       <BrowserRouter>
-        {/* Wrap everything with AuthProvider for authentication management */}
-        <AuthProvider>
-          {/* Wrap with ModalProvider for modal management */}
-          <ModalProvider>
-            {/* Include LandsatProvider to provide context values for Landsat API */}
+        <ModalProvider>
+          <AuthProvider>
             <LandsatProvider>
               <AppRoutes />
             </LandsatProvider>
-          </ModalProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </ModalProvider>
       </BrowserRouter>
     </QueryClientProvider>
   );
 }
 
-// Separated Routes into its own component
 function AppRoutes() {
-  const { openLogin } = useModal(); // Use the modal hook from ModalProvider context
+  const { openLogin } = useModal();
 
   return (
     <Routes>
@@ -45,7 +40,6 @@ function AppRoutes() {
       <Route path="/forgetpass" element={<ForgetPass />} />
       <Route path="/landsatForm" element={<LandsatForm />} />
 
-      {/* Private route for the SatelliteMap */}
       <Route
         path="/map"
         element={
@@ -55,7 +49,6 @@ function AppRoutes() {
         }
       />
 
-      {/* Redirect any unknown path to Home */}
       <Route path="*" element={<Home />} />
     </Routes>
   );

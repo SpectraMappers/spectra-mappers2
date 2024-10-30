@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { useModal } from "../services/contextApi";
 import Swal from "sweetalert2";
 import axios from "axios";
 
@@ -8,6 +9,7 @@ import axios from "axios";
 const AuthContext = createContext();
 
 export const useAuth = () => {
+  const {closeLogin} =useModal()
   const navigate = useNavigate(); // React hook for navigation
   const queryClient = useQueryClient(); // React Query hook for managing cache
 
@@ -42,6 +44,7 @@ export const useAuth = () => {
             // Invalidate user query cache and navigate to the map page
             queryClient.invalidateQueries("user");
             navigate("/map");
+            closeLogin();
           } catch (error) {
             // Handle error if fetching user data fails
             Swal.fire(

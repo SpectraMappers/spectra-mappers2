@@ -11,7 +11,7 @@ function Text() {
         <p className="text-[#c7c7c7] text-xl md:text-2xl font-light leading-[120%] tracking-[0.2px]">
           Define your location, get notified when Landsat passes over,
         </p>
-        <Link to ="/map" className="w-[160px] md:w-[200px] cursor-pointer p-2 md:p-4 rounded-lg text-white bg-[#4169E1] md:text-xl">
+        <Link to ="/map" className="w-[160px] md:w-[200px] cursor-pointer p-2 md:p-4 rounded-lg text-white bg-[#4169E1] md:text-xl hover:bg-[#305bd9] transition-all duration-300">
           Explore the earth
         </Link>
       </div>

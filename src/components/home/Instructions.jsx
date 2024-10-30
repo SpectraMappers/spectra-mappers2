@@ -16,7 +16,7 @@ function Instructions() {
       {/* Instruction Header */}
       <div className="flex justify-center items-center flex-col gap-2 font-Kanit z-10">
         <h1 className="text-4xl font-bold mb-8 text-white">Instructions</h1>
-        <p className="text-gray-400 text-lg mb-8">
+        <p className="text-gray-400 text-lg mb-8 text-center">
           Step-by-step instructions on how to use the key features of the website.
         </p>
       </div>

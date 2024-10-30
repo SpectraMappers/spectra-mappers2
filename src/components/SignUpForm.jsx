@@ -44,7 +44,7 @@ const formSchema = z.object({
 });
 
 export default function SignUpForm() {
-  const { openLogin, closeSignIn, submitSignUp } = useModal(); // Use the modal context
+  const { openLogin, closeSignUp, submitSignUp } = useModal(); // Use the modal context
 
   // Initialize the form using react-hook-form and zodResolver
   const form = useForm({
@@ -67,7 +67,7 @@ export default function SignUpForm() {
     form.reset(); // Reset the form after submission
 
     // Close the Sign Up modal and open the Login modal
-    closeSignIn();
+    closeSignUp();
     openLogin();
   };
 
@@ -83,7 +83,7 @@ export default function SignUpForm() {
           </div>
           <button
             className="absolute right-5 top-5 text-gray-600 hover:text-gray-800"
-            onClick={closeSignIn}
+            onClick={closeSignUp}
             aria-label="Close"
           >
             <IoClose size={24} />
@@ -224,8 +224,9 @@ export default function SignUpForm() {
               Already have an account?{" "}
               <Link to="/login">
                 <u
+                className="text-blue-600 hover:text-blue-800"
                   onClick={() => {
-                    closeSignIn();
+                    closeSignUp();
                     openLogin();
                   }}
                 >

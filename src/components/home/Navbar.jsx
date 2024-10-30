@@ -35,49 +35,6 @@ function Navbar() {
           </span>
         </Link>
 
-        {/* Menu Items */}
-        <div
-          className={`items-center justify-between w-full md:flex md:w-auto md:order-1 transition-all duration-300 ${
-            isOpen ? "flex" : "hidden"
-          }`}
-          id="navbar-cta"
-        >
-          <ul className="flex flex-col md:flex-row font-medium p-4 mt-4 bg-transparent rounded-lg md:space-x-8 md:mt-0">
-            <li>
-              <Link
-                to="/"
-                className="block py-2 px-3 rounded text-[#4169e1] hover:text-white"
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/map"
-                className="block py-2 px-3 text-white rounded hover:bg-gray-700 hover:text-white"
-              >
-                Map
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/about"
-                className="block py-2 px-3 text-white rounded hover:bg-gray-700 hover:text-white"
-              >
-                About
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/contact"
-                className="block py-2 px-3 text-white rounded hover:bg-gray-700 hover:text-white"
-              >
-                Contact
-              </Link>
-            </li>
-          </ul>
-        </div>
-
         {/* Conditionally render Login/Signup or User Info */}
         <div className="flex md:order-2 space-x-3 gap-[5px] md:gap-2">
           {user ? (
@@ -133,7 +90,7 @@ function Navbar() {
                 type="button"
                 variant="outline"
                 onClick={handleLogout}
-                className="hover:bg-red-500 hover:text-white"
+                className="hover:bg-red-500 hover:text-white transition-all duration-300"
               >
                 <Link to="/">Log out</Link>
               </Button>
@@ -144,7 +101,7 @@ function Navbar() {
                 asChild
                 type="button"
                 variant="outline"
-                className="hover:bg-blue-500 hover:text-white"
+                className="px-2 md:px-4 hover:bg-blue-500 hover:text-white"
               >
                 <Link to="/login" onClick={openLogin}>
                   Log in
@@ -153,7 +110,7 @@ function Navbar() {
               <Button
                 type="button"
                 variant="secondary"
-                className="bg-blue-600 hover:bg-blue-700 text-white"
+                className="px-2 md:px-4 bg-blue-600 hover:bg-blue-700 text-white"
               >
                 <Link to="/signup" onClick={openSignUp}>
                   Sign up
@@ -161,32 +118,59 @@ function Navbar() {
               </Button>
             </>
           )}
+
+          {/* Mobile Menu Toggle Button */}
+          <button
+            onClick={toggleMenu}
+            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-400 rounded-lg md:hidden hover:bg-gray-700 focus:outline-none"
+            aria-controls="navbar-cta"
+            aria-expanded={isOpen ? "true" : "false"}
+          >
+            <span className="sr-only">Open main menu</span>
+            <svg
+              className="w-5 h-5"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 17 14"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M1 1h15M1 7h15M1 13h15"
+              />
+            </svg>
+          </button>
         </div>
 
-        {/* Mobile Menu Toggle Button */}
-        <button
-          onClick={toggleMenu}
-          className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-400 rounded-lg md:hidden hover:bg-gray-700 focus:outline-none"
-          aria-controls="navbar-cta"
-          aria-expanded={isOpen ? "true" : "false"}
+        <div
+          className={`items-center justify-between w-full md:flex md:w-auto md:order-1 transition-transform duration-300 ease-in-out ${
+            isOpen ? "translate-y-0" : "translate-y-10 hidden"
+          } translate-y-0`}
+          id="navbar-cta"
         >
-          <span className="sr-only">Open main menu</span>
-          <svg
-            className="w-5 h-5"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 17 14"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M1 1h15M1 7h15M1 13h15"
-            />
-          </svg>
-        </button>
+          <ul className="flex flex-col md:flex-row font-medium p-4 mt-4 bg-transparent rounded-lg md:space-x-8 md:mt-0">
+            {["Home", "Map", "About", "Instructions"].map((link, index) => (
+              <li
+                key={link}
+                className={`transform transition-transform duration-300 ease-in-out ${
+                  isOpen
+                    ? `translate-x-0 delay-${index * 100}`
+                    : "translate-x-10"
+                }`}
+              >
+                <Link
+                  to={`/${link.toLowerCase()}`}
+                  className="block py-2 px-3 rounded text-white hover:text-[#4169e1] hover:translate-x-2 active:text-[#224ccc] transition-all duration-300"
+                >
+                  {link}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
       {/* Profile Popup */}

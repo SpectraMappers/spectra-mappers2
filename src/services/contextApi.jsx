@@ -56,7 +56,7 @@ export const ModalProvider = ({ children }) => {
 
   // Functions to open and close modals
   const openSignUp = () => dispatch({ type: OPEN_SIGNUP }); // Ensure this function name is correct
-  const closeSignIn = () => dispatch({ type: CLOSE_SIGNUP });
+  const closeSignUp = () => dispatch({ type: CLOSE_SIGNUP });
   const openLogin = () => dispatch({ type: OPEN_LOGIN });
   const closeLogin = () => dispatch({ type: CLOSE_LOGIN });
   const openForgetPass = () => dispatch({ type: OPEN_FORGETPASS });
@@ -107,7 +107,7 @@ export const ModalProvider = ({ children }) => {
       value={{
         ...state,
         openSignUp, // Correct function name
-        closeSignIn,
+        closeSignUp,
         openLogin,
         closeLogin,
         openForgetPass,
