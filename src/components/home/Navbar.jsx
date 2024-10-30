@@ -147,8 +147,8 @@ function Navbar() {
 
         <div
           className={`items-center justify-between w-full md:flex md:w-auto md:order-1 transition-transform duration-300 ease-in-out ${
-            isOpen ? "translate-y-0" : "translate-y-10 hidden"
-          } translate-y-0`}
+            isOpen ? "" : "hidden"
+          } md:block`}
           id="navbar-cta"
         >
           <ul className="flex flex-col md:flex-row font-medium p-4 mt-4 bg-transparent rounded-lg md:space-x-8 md:mt-0">
