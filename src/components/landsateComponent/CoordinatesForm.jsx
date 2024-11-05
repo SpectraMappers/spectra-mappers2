@@ -2,21 +2,23 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import Button from "../../components/ui/button"; // Adjust the path to match your folder structure
-import Input from "../../components/ui/input"; // Adjust the path to match your folder structure
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
-// Define the schema for the form
 const popupSchema = z.object({
   startDate: z.string().nonempty({ message: "Start date is required." }),
   endDate: z.string().nonempty({ message: "End date is required." }),
   cloudCoverage: z.number().min(0).max(100).nonnegative(),
 });
 
-const CoordinatesForm = ({ onSubmit, latitude, longitude }) => {
+const CoordinatesForm = ({ onSubmit, latitude, longitude, onClose }) => {
   const form = useForm({ resolver: zodResolver(popupSchema) });
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="bg-white p-8 rounded-lg shadow-lg max-w-lg mx-auto">
+    <form
+      onSubmit={form.handleSubmit(onSubmit)}
+      className="bg-white p-8 rounded-lg shadow-lg max-w-lg mx-auto"
+    >
       <h2 className="text-xl font-bold mb-4">Enter Satellite Data</h2>
 
       {/* Coordinates */}
@@ -47,9 +49,10 @@ const CoordinatesForm = ({ onSubmit, latitude, longitude }) => {
         <Input {...form.register("cloudCoverage")} type="number" min={0} max={100} />
       </div>
 
-      {/* Submit Button */}
+      {/* Submit and Close Buttons */}
       <div className="flex gap-4 items-center">
         <Button type="submit">Get Data</Button>
+        <Button type="button" onClick={onClose}>Close</Button>
       </div>
     </form>
   );
